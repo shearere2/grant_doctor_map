@@ -1,0 +1,7 @@
+{
+    "python.pythonPath": "/.venv/bin/python3.12",
+  
+    "workbench.colorCustomizations": {
+      "activityBar.background": "#773696"
+    }
+  }
