@@ -15,6 +15,7 @@ fasttext = {git = "https://github.com/cfculhane/fastText"}
 sqlalchemy = "^2.0.28"
 xgboost = "^2.0.3"
 scikit-learn = "^1.4.1.post1"
+mysql-connector = "^2.2.9"
 
 
 [build-system]
