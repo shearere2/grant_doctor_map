@@ -42,8 +42,7 @@ class StringDistanceFeatures():
         df['ft_dist_last_name'] = df.apply(lambda row: np.linalg.norm((row['vec_grant_last_name']) - row['vec_npi_last_name']),
                                             axis = 1)
         
-        return df.drop(columns=data_cols).drop(columns=[
-            v for v in df.columns if 'vec' in v])
+        return df
 
 
 if __name__ == '__main__':
