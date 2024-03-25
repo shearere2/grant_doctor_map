@@ -1,6 +1,4 @@
 from grant_doctor_map.mapping import classifier, string_distance_features
-from grant_doctor_map.grants import grants_reader
-from grant_doctor_map.npi import npi_reader
 import pandas as pd
 
 sdf = string_distance_features.StringDistanceFeatures()
