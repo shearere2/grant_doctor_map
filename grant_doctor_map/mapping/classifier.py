@@ -108,7 +108,7 @@ class Classifier():
 
     def _initialize_xgb_model(self):
         """Create a new xgbclassifier"""
-        return xgb.XGBClassifier(enable_categorical = True)
+        return xgb.XGBRegressor()
     
 
 if __name__=="__main__":
