@@ -10,8 +10,8 @@ import xgboost as xgb
 import sklearn.model_selection
 
 
-class Classifier():
-    def __init__(self, model_dir: str, model_type: str = 'xgb'):
+class EntityResolutionModel():  # Camel case, because it's a class, matches filename
+    def __init__(self, model_dir: str, model_type: str = 'xgb'):  # maybe a base directory?
         self.model = (self._initialize_xgb_model() if model_type == 'xgb' 
                       else self._initialize_random_forests())
         self.metadata = {}
@@ -30,7 +30,7 @@ class Classifier():
         features, features_test, labels, labels_test = (
             sklearn.model_selection.train_test_split(
                 features, labels, test_size=0.2))
-        self.model.fit(features, labels.astype('float'))
+        self.model.fit(features, labels)
         self.metadata['training_date'] = datetime.datetime.now().strftime('%Y%m%d')
         self.metadata['training_rows'] = len(labels)
         self.metadata['accuracy'] = self.assess(features_test, labels_test)
@@ -67,7 +67,7 @@ class Classifier():
             float: the accuracy of our model
         """
         pred_labels = self.predict(features)
-        return sklearn.metrics.mean_squared_error(labels, pred_labels)
+        return (pred_labels == labels).sum()/len(labels)
 
     def save(self, filename: str, overwrite: bool = False):
         """Save filename location model_path on hard drive"""
@@ -77,7 +77,15 @@ class Classifier():
         today = datetime.datetime.now().strftime('%y%m%d')
         if filename[:6] != today:
             filename = f'{today}_{filename}'
-            
+        
+        # ugly way:
+        # if filename[-5:].lower() != '.json':
+        #     filename = filename + '.json'
+        # # ugly way 2:
+        # dot_pos = filename.find('.')
+        # if filename[dot_pos:] != '.json':
+        #     filename = filename + '.json'
+        # pretty way
         if os.path.splitext(filename)[1] != '.json':
             filename = filename + '.json'
         
@@ -93,7 +101,7 @@ class Classifier():
             raise FileExistsError('Cannot overwrite existing file')
 
         self.model.save_model(path)
-        with open(metadata_path, 'w') as fo:
+        with open(metadata_path) as fo:
             json.dump(self.metadata, fo)
 
     def load(self, filename: str):
@@ -106,10 +114,6 @@ class Classifier():
         with open(metadata_path) as fr:
             self.metadata = json.load(fr)
 
-    def _initialize_xgb_model(self):
+    def _initialize_xgb_model():
         """Create a new xgbclassifier"""
-        return xgb.XGBRegressor()
-    
-
-if __name__=="__main__":
-    c = Classifier()
+        return xgb.XGBClassifier()

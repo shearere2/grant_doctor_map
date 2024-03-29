@@ -13,7 +13,4 @@ CREATE TABLE IF NOT EXISTS npi (
 conn = sqlite3.connect('data/grant_npi.db')
 cursor = conn.cursor()
 cursor.execute(query)
-record = cursor.fetchall()
-print('version is: ', record)
-
 cursor.close()
