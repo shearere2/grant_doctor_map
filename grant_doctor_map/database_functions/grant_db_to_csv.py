@@ -2,8 +2,7 @@ import pandas as pd
 import sqlite3
 
 def create_connection(db_file):
-    """Creates the connection to db_file (in our case,
-    will be the existing database.)
+    """Creates the connection to db_file
 
     Args:
         db_file (str): Database file name to retrieve data from
