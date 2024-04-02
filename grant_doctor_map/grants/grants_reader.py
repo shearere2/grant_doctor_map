@@ -45,15 +45,19 @@ class GrantReader():
     
     def _clean(self, df: pd.DataFrame):
         """Clean up the data"""
+        # Split apart pi names and make new rows with a single name in each
         df['pi_names'] = df['pi_names'].str.split(';')
         df = df.explode('pi_names')
 
+        # Pull out if the person is the contact
         df['is_contact'] = df['pi_names'].str.lower().str.contains('(contact)', regex=False)
         df['pi_names'] = df['pi_names'].str.replace('(contact)', '')
 
+        # Split apart last and firstnames
         df['both_names'] = df['pi_names'].apply(lambda x: x.split(',')[:2])
         df['last_name'] = df['both_names'].apply(lambda x: x[0])
         df['forename'] = df['both_names'].apply(lambda x: x[1])
+        df['last_name'] = df['last_name'].apply(lambda x: x.strip('\''))
 
         return df
     

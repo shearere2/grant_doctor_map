@@ -1,8 +1,7 @@
 import pandas as pd
 import sqlalchemy
-
-from grants import grants_reader
-from npi import npi_reader
+from grant_doctor_map.grants import grants_reader
+from grant_doctor_map.npi import npi_reader
 
 
 def db():
@@ -12,14 +11,14 @@ def db():
 
 
 def grants_csv_to_db():
-    df = grants_reader.read_grants_year(22)
+    df = grants_reader.GrantReader('data/RePORTER_PRJ_C_FY2022.csv').df
     df.to_sql('grants',
               db(),
               if_exists='append',
               index=False)
     
 def npi_csv_to_db(csv_path: str):
-    df = npi_reader.read(csv_path)
+    df = npi_reader.read(csv_path).df
     df.to_sql('npi',
               db(),
               if_exists='append',
