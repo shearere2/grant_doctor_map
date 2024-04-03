@@ -57,7 +57,6 @@ class GrantReader():
         df['both_names'] = df['pi_names'].apply(lambda x: x.split(',')[:2])
         df['last_name'] = df['both_names'].apply(lambda x: x[0])
         df['forename'] = df['both_names'].apply(lambda x: x[1])
-        df['last_name'] = df['last_name'].apply(lambda x: x.strip('\''))
 
         return df
     

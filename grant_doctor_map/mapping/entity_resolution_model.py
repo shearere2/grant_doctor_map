@@ -101,7 +101,7 @@ class EntityResolutionModel():  # Camel case, because it's a class, matches file
             raise FileExistsError('Cannot overwrite existing file')
 
         self.model.save_model(path)
-        with open(metadata_path) as fo:
+        with open(metadata_path, 'w') as fo:
             json.dump(self.metadata, fo)
 
     def load(self, filename: str):
@@ -114,6 +114,6 @@ class EntityResolutionModel():  # Camel case, because it's a class, matches file
         with open(metadata_path) as fr:
             self.metadata = json.load(fr)
 
-    def _initialize_xgb_model():
+    def _initialize_xgb_model(self):
         """Create a new xgbclassifier"""
         return xgb.XGBClassifier()

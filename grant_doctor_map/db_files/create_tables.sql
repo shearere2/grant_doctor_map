@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS provider (
     country VARCHAR(100)
 );
 
+-- The bridge table between grantees and providers
 CREATE TABLE IF NOT EXISTS grantee_provider (
     grantee_id INT NOT NULL,
     provider_id INT NOT NULL,
@@ -33,10 +34,3 @@ CREATE TABLE IF NOT EXISTS grantee_provider (
     FOREIGN KEY(provider_id) REFERENCES provider(id),
     UNIQUE(grantee_id, provider_id)
 );
-
-SELECT DISTINCT gr.last_name
-FROM grants gr
-INNER JOIN npi
-	ON gr.last_name = npi.last_name
-LIMIT 100;
-
