@@ -1,6 +1,6 @@
 from typing import Iterable
 from tensorflow import keras
-from keras.losses import MeanSquaredError
+from keras.losses import mean_squared_error
 
 
 def autoencoder(n_input: int,
@@ -22,7 +22,7 @@ def autoencoder(n_input: int,
     x = inputs
     for layer_size in [n_input] + n_layers:
         x = keras.layers.Dense(layer_size, activation='relu')(x)
-    bottleneck = keras.layers.Dense(n_bottleneck, activation='relu')(x)
+    bottleneck = keras.layers.Dense(n_bottleneck)(x)
 
     dec_inputs = keras.layers.Dense(n_layers[-1], activation='relu')(bottleneck)
     y = dec_inputs
@@ -31,10 +31,31 @@ def autoencoder(n_input: int,
     
     encoder_model = keras.models.Model(inputs=inputs, outputs=bottleneck)
     full_model = keras.models.Model(inputs=inputs, outputs=y)
-    full_model.compile(loss=MeanSquaredError, optimizer='adam')
+    full_model.compile(loss=mean_squared_error, optimizer='adam')
 
     return encoder_model, full_model
 
 
 if __name__ == '__main__':
-    enc, dec, full = autoencoder(50, 3, (40, 30, 20, 10))
+    import read_wine_data
+
+    df = read_wine_data.read()
+    labels = df['quality']
+    features = df[[col for col in df.columns if col !='quality']]
+
+    encoder_model, training_model = autoencoder(n_input=11,n_bottleneck=2,
+                                                n_layers=[8,6,4])
+    
+    for col in features:
+        features[col] -= features[col].min()
+        features[col] /= features[col].max()
+
+    print('BEFORE')
+    print(encoder_model.predict(features))
+
+    # An autoencoder is defined as fitting the output data equal to the input data
+    training_model.fit(features.values,features.values,
+                       epochs=8, batch_size=32, shuffle=True)
+    
+    print("AFTER")
+    print(encoder_model.predict(features))
