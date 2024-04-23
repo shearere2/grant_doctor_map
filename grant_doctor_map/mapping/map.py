@@ -22,7 +22,7 @@ def map():
         temp_grants = grants.loc[grants['last_name']==name]
         temp_npi = npi.loc[npi['last_name']==name]
         df = model_features.features(temp_grants,temp_npi)
-        model = entity_resolution_model.EntityResolutionModel(model_dir='data')
+        model = entity_resolution_model.EntityResolutionModel(model_dir='models/240423_entity_resolution_model_metadata.json')
         out = model.predict(features=df)
         df.to_sql(out.loc[out['is_match']],con=conn)
 

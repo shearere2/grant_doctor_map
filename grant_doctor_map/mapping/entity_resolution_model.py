@@ -33,7 +33,9 @@ class EntityResolutionModel():  # Camel case, because it's a class, matches file
         self.model.fit(features, labels)
         self.metadata['training_date'] = datetime.datetime.now().strftime('%Y%m%d')
         self.metadata['training_rows'] = len(labels)
+        print()
         self.metadata['accuracy'] = self.assess(features_test, labels_test)
+        print()
 
     def predict(self, 
                 features: pd.DataFrame, 
