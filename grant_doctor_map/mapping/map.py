@@ -24,11 +24,7 @@ def map():
         df = model_features.features(temp_grants,temp_npi)
         model = entity_resolution_model.EntityResolutionModel(model_dir='data')
         out = model.predict(features=df)
-        print()
-        #.loc[is_match] 
-        # df.to_sql
-    series = 0#entity_resolution_model.predict(df)
-    return series
+        df.to_sql(out.loc[out['is_match']],con=conn)
 
 if __name__ == "__main__":
     map()
