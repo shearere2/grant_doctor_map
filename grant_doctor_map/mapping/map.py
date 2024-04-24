@@ -11,20 +11,28 @@ import sqlite3
 import model_features
 import entity_resolution_model
 def map():
+    model = entity_resolution_model.EntityResolutionModel(model_path='models')
+    model.load("240424_entity_resolution_model.json")
     conn = sqlite3.connect('data/grant_npi.db')
     query = '''SELECT DISTINCT last_name FROM grants;'''
     names = pd.read_sql(query,con=conn)
-    query = '''SELECT * FROM grants GROUP BY last_name'''
-    grants = pd.read_sql(query,con=conn)
-    query = '''SELECT * FROM npi GROUP BY last_name'''
-    npi = pd.read_sql(query,con=conn)
+    gids = np.ndarray([])
+    nids = np.ndarray([])
+    out = np.ndarray([])
     for name in names['last_name']:
-        temp_grants = grants.loc[grants['last_name']==name]
-        temp_npi = npi.loc[npi['last_name']==name]
-        df = model_features.features(temp_grants,temp_npi)
-        model = entity_resolution_model.EntityResolutionModel(model_path='models')
-        out = model.predict(features=df)
-        df.to_sql(out.loc[out['is_match']],con=conn)
+        if name.find("'") == -1:
+            query = f'''SELECT * FROM grants WHERE last_name = '{name}';'''
+            grants = pd.read_sql(query,con=conn)
+            query = f'''SELECT * FROM npi WHERE last_name = '{name}';'''
+            npi = pd.read_sql(query,con=conn)
+            df = model_features.features(grants,npi) # Why is this giving NaNs
+            gids = np.append(gids,grants['application_id'])
+            nids = np.append(nids,npi['npi'])
+            out = np.append(out,model.predict(features=df))
+    df['is_match'] = out
+    df['npi_id'] = nids
+    df['grant_id'] = gids
+    df.to_sql(df.loc[df['is_match']],con=conn)
 
 if __name__ == "__main__":
     map()
