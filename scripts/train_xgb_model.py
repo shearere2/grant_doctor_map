@@ -5,7 +5,7 @@ from grant_doctor_map.mapping import entity_resolution_model,model_features
 
 
 def create_xgb_model(features: pd.DataFrame, labels: np.ndarray, path: str):
-    xgb_model = entity_resolution_model.EntityResolutionModel('Models')
+    xgb_model = entity_resolution_model.EntityResolutionModel('models')
     xgb_model.train(features, labels)
     xgb_model.save(path)
 

@@ -10,12 +10,11 @@ import xgboost as xgb
 import sklearn.model_selection
 
 
-class EntityResolutionModel():  # Camel case, because it's a class, matches filename
-    def __init__(self, model_dir: str, model_type: str = 'xgb'):  # maybe a base directory?
-        self.model = (self._initialize_xgb_model() if model_type == 'xgb' 
-                      else self._initialize_random_forests())
+class EntityResolutionModel():
+    def __init__(self, model_path: str):
+        self.model = self._initialize_xgb_model()
         self.metadata = {}
-        self.model_dir = model_dir
+        self.model_dir = model_path
 
     def train(self, features: pd.DataFrame, labels: pd.Series):
         """Train our classifier with features to predict labels
@@ -80,14 +79,6 @@ class EntityResolutionModel():  # Camel case, because it's a class, matches file
         if filename[:6] != today:
             filename = f'{today}_{filename}'
         
-        # ugly way:
-        # if filename[-5:].lower() != '.json':
-        #     filename = filename + '.json'
-        # # ugly way 2:
-        # dot_pos = filename.find('.')
-        # if filename[dot_pos:] != '.json':
-        #     filename = filename + '.json'
-        # pretty way
         if os.path.splitext(filename)[1] != '.json':
             filename = filename + '.json'
         
