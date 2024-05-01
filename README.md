@@ -8,3 +8,4 @@ In this repository, you will find:
  - Classifier to accept merged data.
  - File to determine distance of Jarowinkler difference between 2 strings.
  - Files to create and modify a SQL database.
+ - File solving entity resolution between grant recipients and medical doctors.
